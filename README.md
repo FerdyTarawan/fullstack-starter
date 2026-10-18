@@ -1,15 +1,16 @@
 # Fullstack Template
 
-A minimal full-stack starter: FastAPI served by Granian with UV, TanStack Start
-with React and TypeScript, and shadcn **Lyra with React Aria**. Mise manages runtimes and tasks;
-Ruff handles Python formatting/linting; Vite+ handles the frontend; prek installs
-the Git hooks.
+A full-stack starter pairing a Python **FastAPI** backend with a **TanStack Start** (React + TypeScript) frontend.
 
-## Quick start
+## Stack
 
-Use your existing Mise, UV, pnpm, Ruff **0.17.1**, and prek **0.5.5** installations.
-No additional global CLI installation is required. Vite+ is pinned locally to
-**1.1.0** and runs through pnpm, using the Node version supplied by Mise.
+- **Backend (`apps/api`)**: FastAPI, Granian (ASGI server), UV, Ruff, pytest
+- **Frontend (`apps/web`)**: TanStack Start, React 19, Tailwind CSS v4, shadcn (`aria-lyra` with React Aria), Vite+ (`vp`)
+- **Tooling**: Mise for runtime & task management, pnpm workspaces, `prek` for Git hooks
+
+## Getting Started
+
+Make sure you have [Mise](https://mise.jdx.dev/), [Ruff](https://docs.astral.sh/ruff/), and [prek](https://github.com/j178/prek) installed on your machine. Make sure Git is initialized (`git init`) before running setup so hooks can be installed.
 
 ```sh
 mise trust
@@ -18,105 +19,73 @@ mise run setup
 mise run dev
 ```
 
-`mise install` reuses the installed versions pinned in `mise.toml` (Python
-3.14.7, Node 26.7.0, UV 0.12.24, pnpm 12.6.0). `setup` installs locked project
-dependencies and the prek hook. Run commands from the repository root. In a new
-checkout, Git must already be initialized before running `setup`.
+- **Frontend**: <http://127.0.0.1:3000>
+- **Backend API**: <http://127.0.0.1:8000> (interactive docs at <http://127.0.0.1:8000/docs>)
 
-Open <http://127.0.0.1:3000>. The API runs on <http://127.0.0.1:8000>, with
-interactive API documentation at <http://127.0.0.1:8000/docs>. Ctrl-C stops both
-services; if either service exits, the other is stopped too.
+Press `Ctrl-C` to stop both servers together.
 
-Granian serves the API using its ASGI interface. Its reload extra is included
-only in the development dependency group and watches `apps/api/src`.
+## Tasks
 
-## Commands
+All everyday workflows run through Mise from the repo root:
 
-| Command                             | Purpose                                        |
-| ----------------------------------- | ---------------------------------------------- |
-| `mise run setup`                    | Sync frozen dependencies and install Git hooks |
-| `mise run dev`                      | Run both apps with reload                      |
-| `mise run dev:api`                  | Run only the API                               |
-| `mise run dev:web`                  | Run only the frontend                          |
-| `mise run check`                    | Check formatting, lint, and frontend types     |
-| `mise run format`                   | Apply Python lint fixes and format both apps   |
-| `mise run test`                     | Run pytest and Vite+ tests                     |
-| `mise run build`                    | Build frontend client assets and SSR server    |
-| `mise exec -- prek run --all-files` | Run hooks against all tracked files            |
+| Command                             | Description                                              |
+| ----------------------------------- | -------------------------------------------------------- |
+| `mise run setup`                    | Install locked Python/Node dependencies and Git hooks    |
+| `mise run dev`                      | Start both the API and frontend dev servers with reload  |
+| `mise run dev:api`                  | Start only the FastAPI server                            |
+| `mise run dev:web`                  | Start only the frontend dev server                       |
+| `mise run check`                    | Run linters, format checks, and TypeScript type-checking |
+| `mise run format`                   | Auto-fix lint issues and format code across both apps    |
+| `mise run test`                     | Run backend (`pytest`) and frontend (`vp test`) suites   |
+| `mise run build`                    | Build the frontend client bundle and SSR server          |
+| `mise exec -- prek run --all-files` | Run pre-commit hooks across the entire repository        |
 
-The hooks check relevant staged files without modifying them. Use `format` to
-apply changes. Ruff and prek are external prerequisites, deliberately excluded
-from the Python environment. No Husky or Vite+ hook dispatcher is installed.
+> **Note:** Git hooks only check staged files and won't modify your working tree. Run `mise run format` to apply formatting fixes automatically.
 
-## VS Code
+## Project Structure
 
-Open the repository root as your VS Code folder. Root `.vscode/settings.json`
-uses Ruff for Python and Oxc for JavaScript/TypeScript, with safe lint fixes and
-formatting on save (including Auto Save). Oxc also formats JSON, CSS, HTML,
-Markdown, and YAML on save. Issues without a safe automatic fix remain in the
-Problems panel.
+```text
+.
+├── apps/
+│   ├── api/        # FastAPI app (src/api), pytest suite, and UV config
+│   └── web/        # TanStack Start app, routes, and UI components
+├── scripts/        # Dev server process runner and pre-commit hook helper
+├── mise.toml       # Pinned tool versions (Python, Node, UV, pnpm) and tasks
+└── package.json    # Root pnpm workspace config
+```
 
-The installed ty extension provides Python language features and workspace type
-diagnostics, using the API virtual environment. Pylance is disabled for this
-workspace. ty uses the executable bundled with its extension, so no additional
-CLI or project dependency is needed; Ruff continues to handle formatting and lint fixes.
+The starter includes a minimal `/api/health` endpoint and an example health-check call in `apps/web/src/lib/`, which you can replace or expand using whichever pattern fits your project (TanStack Start server functions, a generated OpenAPI client, or direct client fetches). To override the default backend URL (`http://127.0.0.1:8000`), copy `apps/web/.env.example` to `apps/web/.env` and set `API_BASE_URL`.
 
-The two `.vscode/*.mjs` launchers run the existing web-local Vite+ language
-servers using `apps/web/vite.config.ts`; they need no additional packages.
-Ruff uses your existing environment installation. The Python interpreter points
-to the API virtual environment, and the generated route manifest remains read-only.
-If the folder was already open, run **Developer: Reload Window** to pick up the
-updated language-server launchers.
+### Adding UI Components
 
-## Structure and API connection
-
-- `apps/api`: Python package under `src/api`, tests, and its UV lockfile.
-- `apps/web`: TanStack Start routes, generated Lyra components, and frontend tests.
-- `scripts`: development process supervisor and staged-file hook adapter.
-- Root Mise config and pnpm workspace/lockfile: shared tooling and commands.
-
-`GET /api/health` responds with `{"status":"ok"}`. The homepage calls a TanStack
-Start server function, which fetches the Python API with a three-second timeout.
-The browser uses the Start server's RPC bridge; the API URL stays server-side and
-no CORS configuration is needed. Failures show an unavailable state and a retry
-button. The UI uses a live region and React Aria keyboard interactions.
-
-The API URL defaults to `http://127.0.0.1:8000`. To override it during development,
-copy `apps/web/.env.example` to `apps/web/.env`, edit `API_BASE_URL`, and restart
-the frontend. An exported `API_BASE_URL` takes precedence. Keep this variable
-server-only; do not add a `VITE_` prefix.
-
-Lyra uses the generated neutral palette, JetBrains Mono font, and square
-components. Add components from the frontend directory using its local CLI:
+The frontend is configured with shadcn (`aria-lyra` style, React Aria components, neutral palette, and JetBrains Mono). To add new components:
 
 ```sh
 mise exec -- pnpm --dir apps/web exec shadcn add input
 ```
 
-`components.json` keeps the `aria-lyra` registry style for future additions.
-Use the `@/` alias for frontend imports. Route files regenerate
-`src/routeTree.gen.ts` when the dev server or build runs.
+## VS Code Setup
 
-## Built app and deployment
+Open the repository root in VS Code. The workspace settings in `.vscode/` are pre-configured to:
 
-Build and preview the complete SSR app locally:
+- Format and fix **Python** on save using **Ruff**, with type checking powered by **ty** (pointing at `apps/api/.venv`, with Pylance disabled).
+- Format and lint **TypeScript, React, JSON, CSS, HTML, Markdown, and YAML** on save using **Oxc** via the local `.vscode/*.mjs` wrappers.
+
+If you already had VS Code open before running `mise run setup`, run **Developer: Reload Window** from the command palette so the language servers pick up the local environments.
+
+## Production Build & Preview
+
+To test a production build locally, build the SSR frontend and start the preview server:
 
 ```sh
 mise run build
 mise exec -- pnpm --dir apps/web exec vp preview --host 127.0.0.1 --port 3000
 ```
 
-Run the API without reload in a separate terminal:
+In a second terminal, run the FastAPI server without reload:
 
 ```sh
 mise exec -- uv run --project apps/api --no-dev granian --interface asgi --host 127.0.0.1 --port 8000 api.main:app
 ```
 
-Vite preview is for local verification. Production hosting is deferred: choose a
-TanStack Start deployment adapter for the target host, serve the generated
-`apps/web/dist/client` assets, and run the SSR handler from
-`apps/web/dist/server/server.js` with that adapter. Set `API_BASE_URL` in the
-frontend server environment and keep FastAPI reachable from that server.
-
-Database, authentication, application features, containers, and hosted CI are
-intentionally deferred. No application secrets are required for this starter.
+When deploying to production, configure a TanStack Start deployment adapter for your target platform, serve static assets from `apps/web/dist/client`, run the SSR entry at `apps/web/dist/server/server.js`, and set `API_BASE_URL` in the frontend server's environment.
