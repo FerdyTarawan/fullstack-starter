@@ -12,8 +12,8 @@
     "editor.defaultFormatter": "oxc.oxc-vscode",
     "editor.formatOnSave": false,
     "editor.codeActionsOnSave": {
-      "source.fixAll.oxc": "always",
-      "source.format.oxc": "always"
+      "source.format.oxc": "always",
+      "source.fixAll.oxc": "always"
     }
   },
   "[json][jsonc][css][html][markdown][yaml]": {
@@ -23,9 +23,12 @@
   "oxc.enable.oxlint": true,
   "oxc.enable.oxfmt": true,
   "oxc.requireConfig": false,
+  "oxc.configPath": "apps/web/vite.config.ts",
+  "oxc.fmt.configPath": "apps/web/vite.config.ts",
   "oxc.path.oxlint": ".vscode/oxlint.mjs",
   "oxc.path.oxfmt": ".vscode/oxfmt.mjs",
   "oxc.fixKind": "safe_fix",
+  "oxc.typeAware": true,
   "ruff.importStrategy": "fromEnvironment",
   "python.languageServer": "None",
   "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
