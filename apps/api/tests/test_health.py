@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from shorten_it_api.main import app
+from api.main import app
 
 
 def test_health():

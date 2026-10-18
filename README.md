@@ -1,4 +1,4 @@
-# Shorten It
+# Fullstack Template
 
 A minimal full-stack starter: FastAPI served by Granian with UV, TanStack Start
 with React and TypeScript, and shadcn **Lyra with React Aria**. Mise manages runtimes and tasks;
@@ -70,7 +70,7 @@ updated language-server launchers.
 
 ## Structure and API connection
 
-- `apps/api`: Python package under `src/shorten_it_api`, tests, and its UV lockfile.
+- `apps/api`: Python package under `src/api`, tests, and its UV lockfile.
 - `apps/web`: TanStack Start routes, generated Lyra components, and frontend tests.
 - `scripts`: development process supervisor and staged-file hook adapter.
 - Root Mise config and pnpm workspace/lockfile: shared tooling and commands.
@@ -109,7 +109,7 @@ mise exec -- pnpm --dir apps/web exec vp preview --host 127.0.0.1 --port 3000
 Run the API without reload in a separate terminal:
 
 ```sh
-mise exec -- uv run --project apps/api --no-dev granian --interface asgi --host 127.0.0.1 --port 8000 shorten_it_api.main:app
+mise exec -- uv run --project apps/api --no-dev granian --interface asgi --host 127.0.0.1 --port 8000 api.main:app
 ```
 
 Vite preview is for local verification. Production hosting is deferred: choose a
@@ -118,5 +118,5 @@ TanStack Start deployment adapter for the target host, serve the generated
 `apps/web/dist/server/server.js` with that adapter. Set `API_BASE_URL` in the
 frontend server environment and keep FastAPI reachable from that server.
 
-Database, authentication, URL-shortening features, containers, and hosted CI are
+Database, authentication, application features, containers, and hosted CI are
 intentionally deferred. No application secrets are required for this starter.

@@ -9,7 +9,7 @@ function Home() {
     <main className="mx-auto flex min-h-svh max-w-3xl flex-col justify-center gap-10 px-6 py-16">
       <header className="space-y-4">
         <p className="text-xs uppercase tracking-widest text-muted-foreground">
-          Shorten It / Starter
+          Fullstack / Starter
         </p>
         <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">Ready to build.</h1>
         <p className="max-w-lg text-base text-muted-foreground">

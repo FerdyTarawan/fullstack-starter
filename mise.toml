@@ -13,7 +13,7 @@ description = "Start both apps; Ctrl-C stops both"
 run = "python scripts/dev.py"
 
 [tasks."dev:api"]
-run = "uv run --project apps/api granian --interface asgi --reload --reload-paths apps/api/src --host 127.0.0.1 --port 8000 shorten_it_api.main:app"
+run = "uv run --project apps/api granian --interface asgi --reload --reload-paths apps/api/src --host 127.0.0.1 --port 8000 api.main:app"
 
 [tasks."dev:web"]
 run = "pnpm --dir apps/web exec vp dev --host 127.0.0.1 --port 3000 --strictPort"

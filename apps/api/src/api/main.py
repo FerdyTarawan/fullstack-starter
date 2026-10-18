@@ -3,7 +3,7 @@ from typing import Literal
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-app = FastAPI(title="Shorten It API")
+app = FastAPI(title="Backend API")
 
 
 class HealthResponse(BaseModel):
