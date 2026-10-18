@@ -61,7 +61,7 @@ Both **UV** (`pyproject.toml` + `uv.lock`) and **pnpm** (`pnpm-workspace.yaml` +
 The starter includes a minimal `/api/health` endpoint and an example health-check call in `apps/web/src/lib/`, alongside a generated [Hey API (`@hey-api/openapi-ts`)](https://heyapi.dev/) SDK in `apps/web/src/client`. When you add or update FastAPI endpoints or Pydantic models, run `mise run gen:api` to regenerate the TypeScript SDK and types.
 
 To customize local settings:
-- **Backend**: Copy `apps/api/.env.example` to `apps/api/.env` to configure `CORS_ORIGINS`, `API_TITLE`, or `ENV`.
+- **Backend**: Copy `apps/api/.env.example` to `apps/api/.env` to configure `CORS_ORIGINS`, `API_TITLE`, or `ENV`. Setting `ENV=production` disables the Scalar (`/docs`), Swagger (`/swagger`), and ReDoc (`/redoc`) UIs and the `/openapi.json` endpoint; `mise run gen:api` still works because it reads the schema in-process.
 - **Frontend**: Copy `apps/web/.env.example` to `apps/web/.env` to override `API_BASE_URL` (defaults to `http://127.0.0.1:8000`).
 
 ### Adding UI Components
@@ -71,6 +71,10 @@ The frontend is configured with shadcn (`aria-lyra` style, React Aria components
 ```sh
 mise exec -- pnpm --dir apps/web exec shadcn add input
 ```
+
+## Continuous Integration
+
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs the tools pinned in `mise.toml`, then runs `mise run check`, `mise run test`, and `mise run build`. Finally it regenerates the API client and fails if `apps/web/src/client` or `routeTree.gen.ts` differ from what's committed, so remember to run `mise run gen:api` after backend changes.
 
 ## VS Code Setup
 

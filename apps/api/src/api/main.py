@@ -22,9 +22,12 @@ class HealthResponse(BaseModel):
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     active_settings = settings or get_settings()
+    docs_enabled = active_settings.docs_enabled
     application = FastAPI(
         title=active_settings.api_title,
-        docs_url="/swagger",
+        docs_url="/swagger" if docs_enabled else None,
+        redoc_url="/redoc" if docs_enabled else None,
+        openapi_url="/openapi.json" if docs_enabled else None,
         generate_unique_id_function=custom_generate_unique_id,
     )
     application.add_middleware(
@@ -35,12 +38,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         allow_headers=["*"],
     )
 
-    @application.get("/docs", include_in_schema=False)
-    def scalar_html() -> HTMLResponse:
-        return get_scalar_api_reference(
-            openapi_url=application.openapi_url,
-            title=application.title,
-        )
+    if docs_enabled:
+
+        @application.get("/docs", include_in_schema=False)
+        def scalar_html() -> HTMLResponse:
+            return get_scalar_api_reference(
+                openapi_url=application.openapi_url,
+                title=application.title,
+            )
 
     @application.get("/api/health", response_model=HealthResponse, tags=["health"])
     def health() -> HealthResponse:

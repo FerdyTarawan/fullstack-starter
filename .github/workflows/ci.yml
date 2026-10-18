@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Check, test, and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      # Installs the exact runtimes and CLIs pinned in mise.toml (cached between runs).
+      - uses: jdx/mise-action@v5
+
+      - name: Install dependencies
+        run: |
+          uv sync --frozen --all-packages
+          pnpm install --frozen-lockfile
+
+      - name: Lint, format, and type-check
+        run: mise run check
+
+      - name: Test
+        run: mise run test
+
+      - name: Build
+        run: mise run build
+
+      # Fails when backend changes were committed without running `mise run gen:api`,
+      # or when the TanStack route tree is stale.
+      - name: Verify generated code is up to date
+        run: |
+          mise run gen:api
+          paths="apps/web/src/client apps/web/src/routeTree.gen.ts"
+          if [ -n "$(git status --porcelain -- $paths)" ]; then
+            echo "::error::Generated code is out of date. Run 'mise run gen:api' (and 'mise run build' for routes) and commit the result."
+            git status --porcelain -- $paths
+            git --no-pager diff -- $paths
+            exit 1
+          fi
