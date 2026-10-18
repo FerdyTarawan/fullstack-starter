@@ -1,0 +1,12 @@
+[tool.uv.workspace]
+members = ["apps/api"]
+
+[dependency-groups]
+dev = ["pytest", "httpx", "granian[reload]", "ty"]
+
+[tool.ruff]
+target-version = "py314"
+src = ["apps/api/src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

@@ -13,10 +13,10 @@ repos:
         types: [python]
       - id: ty-check
         name: Python types (ty)
-        entry: uv run --project apps/api ty check apps/api
+        entry: uv run ty check apps scripts
         language: system
         pass_filenames: false
-        files: ^apps/api/.*\.py$
+        files: ^(apps|scripts)/.*\.py$
       - id: web-lint
         name: Frontend lint (Vite+)
         entry: python scripts/web_hook.py lint

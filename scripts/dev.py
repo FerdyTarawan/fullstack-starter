@@ -23,8 +23,9 @@ def main():
     signal.signal(signal.SIGINT, stop)
     signal.signal(signal.SIGTERM, stop)
     result = 0
+    dev_tasks = [t for t in config.get("tasks", {}) if t.startswith("dev:")]
     try:
-        for task in ("dev:api", "dev:web"):
+        for task in dev_tasks:
             processes.append(
                 subprocess.Popen(
                     shlex.split(config["tasks"][task]["run"]),

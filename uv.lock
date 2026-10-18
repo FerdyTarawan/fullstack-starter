@@ -2,6 +2,19 @@ version = 1
 revision = 5
 requires-python = ">=3.14"
 
+[manifest]
+members = [
+    "api",
+]
+
+[manifest.dependency-groups]
+dev = [
+    { name = "granian", extras = ["reload"] },
+    { name = "httpx" },
+    { name = "pytest" },
+    { name = "ty" },
+]
+
 [[package]]
 name = "annotated-doc"
 version = "0.0.5"
@@ -36,20 +49,12 @@ wheels = [
 [[package]]
 name = "api"
 version = "0.1.0"
-source = { editable = "." }
+source = { editable = "apps/api" }
 dependencies = [
     { name = "fastapi" },
     { name = "granian" },
     { name = "pydantic-settings" },
     { name = "scalar-fastapi" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "granian", extra = ["reload"] },
-    { name = "httpx" },
-    { name = "pytest" },
-    { name = "ty" },
 ]
 
 [package.metadata]
@@ -58,14 +63,6 @@ requires-dist = [
     { name = "granian" },
     { name = "pydantic-settings" },
     { name = "scalar-fastapi" },
-]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "granian", extras = ["reload"] },
-    { name = "httpx" },
-    { name = "pytest" },
-    { name = "ty" },
 ]
 
 [[package]]

@@ -8,14 +8,14 @@ prek = "0.5.5"
 
 [tasks.setup]
 description = "Install locked dependencies and Git hooks"
-run = ["uv sync --frozen --project apps/api", "pnpm install --frozen-lockfile", "prek install"]
+run = ["uv sync --frozen --all-packages", "pnpm install --frozen-lockfile", "prek install"]
 
 [tasks.dev]
-description = "Start both apps; Ctrl-C stops both"
+description = "Start all dev:* apps; Ctrl-C stops all"
 run = "python scripts/dev.py"
 
 [tasks."dev:api"]
-run = "uv run --project apps/api granian --interface asgi --reload --reload-paths apps/api/src --host 127.0.0.1 --port 8000 api.main:app"
+run = "uv run --package api granian --interface asgi --reload --reload-paths apps/api/src --host 127.0.0.1 --port 8000 api.main:app"
 
 [tasks."dev:web"]
 run = "pnpm --dir apps/web exec vp dev --host 127.0.0.1 --port 3000 --strictPort"
@@ -23,25 +23,25 @@ run = "pnpm --dir apps/web exec vp dev --host 127.0.0.1 --port 3000 --strictPort
 [tasks."gen:api"]
 description = "Generate TypeScript SDK using @hey-api/openapi-ts"
 run = [
-  "uv run --project apps/api python scripts/export_openapi.py",
+  "uv run --package api python scripts/export_openapi.py",
   "pnpm --dir apps/web run openapi-ts",
 ]
 
 [tasks.check]
 description = "Check Python and frontend formatting, lint, and types"
 run = [
-  "ruff check apps/api scripts",
-  "ruff format --check apps/api scripts",
-  "uv run --project apps/api ty check apps/api",
+  "ruff check apps scripts",
+  "ruff format --check apps scripts",
+  "uv run ty check apps scripts",
   "pnpm --dir apps/web exec vp check",
   "pnpm --dir apps/web exec tsc --noEmit",
 ]
 
 [tasks.format]
-run = ["ruff check --fix apps/api scripts", "ruff format apps/api scripts", "pnpm --dir apps/web exec vp fmt"]
+run = ["ruff check --fix apps scripts", "ruff format apps scripts", "pnpm --dir apps/web exec vp fmt"]
 
 [tasks.test]
-run = ["uv run --directory apps/api pytest", "pnpm --dir apps/web exec vp test run"]
+run = ["uv run pytest apps/api", "pnpm --dir apps/web exec vp test run"]
 
 [tasks.build]
 run = "pnpm --dir apps/web exec vp build"

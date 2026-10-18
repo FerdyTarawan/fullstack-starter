@@ -28,11 +28,11 @@
   "oxc.fixKind": "safe_fix",
   "ruff.importStrategy": "fromEnvironment",
   "python.languageServer": "None",
-  "python.defaultInterpreterPath": "${workspaceFolder}/apps/api/.venv",
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
   "ty.disableLanguageServices": false,
   "ty.diagnosticMode": "workspace",
   "ty.importStrategy": "useBundled",
-  "ty.interpreter": "${workspaceFolder}/apps/api/.venv",
+  "ty.interpreter": "${workspaceFolder}/.venv",
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true,
     "**/src/client/**": true
