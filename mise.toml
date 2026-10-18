@@ -30,7 +30,7 @@ run = [
 [tasks."ui:add"]
 description = "Add shadcn UI components to the web app (e.g., mise run ui:add input)"
 run = [
-  'pnpm --dir apps/web run ui:add "$@"',
+  'pnpm --dir apps/web run ui:add',
   "pnpm --dir apps/web run format src/components/ui",
 ]
 
