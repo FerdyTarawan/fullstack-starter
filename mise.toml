@@ -3,10 +3,12 @@ python = "3.14.7"
 node = "26.7.0"
 uv = "0.12.24"
 pnpm = "12.6.0"
+ruff = "0.17.1"
+prek = "0.5.5"
 
 [tasks.setup]
 description = "Install locked dependencies and Git hooks"
-run = ["ruff --version", "prek --version", "uv sync --frozen --project apps/api", "pnpm install --frozen-lockfile", "prek install"]
+run = ["uv sync --frozen --project apps/api", "pnpm install --frozen-lockfile", "prek install"]
 
 [tasks.dev]
 description = "Start both apps; Ctrl-C stops both"
@@ -18,9 +20,22 @@ run = "uv run --project apps/api granian --interface asgi --reload --reload-path
 [tasks."dev:web"]
 run = "pnpm --dir apps/web exec vp dev --host 127.0.0.1 --port 3000 --strictPort"
 
+[tasks."gen:api"]
+description = "Generate TypeScript SDK using @hey-api/openapi-ts"
+run = [
+  "uv run --project apps/api python scripts/export_openapi.py",
+  "pnpm --dir apps/web run openapi-ts",
+]
+
 [tasks.check]
-description = "Check Python and frontend formatting, lint, and frontend types"
-run = ["ruff check apps/api scripts", "ruff format --check apps/api scripts", "pnpm --dir apps/web exec vp check", "pnpm --dir apps/web exec tsc --noEmit"]
+description = "Check Python and frontend formatting, lint, and types"
+run = [
+  "ruff check apps/api scripts",
+  "ruff format --check apps/api scripts",
+  "uv run --project apps/api ty check apps/api",
+  "pnpm --dir apps/web exec vp check",
+  "pnpm --dir apps/web exec tsc --noEmit",
+]
 
 [tasks.format]
 run = ["ruff check --fix apps/api scripts", "ruff format apps/api scripts", "pnpm --dir apps/web exec vp fmt"]

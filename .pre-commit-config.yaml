@@ -11,15 +11,21 @@ repos:
         entry: ruff format --check
         language: system
         types: [python]
+      - id: ty-check
+        name: Python types (ty)
+        entry: uv run --project apps/api ty check apps/api
+        language: system
+        pass_filenames: false
+        files: ^apps/api/.*\.py$
       - id: web-lint
         name: Frontend lint (Vite+)
         entry: python scripts/web_hook.py lint
         language: system
         files: ^apps/web/.*\.[cm]?[jt]sx?$
-        exclude: ^apps/web/src/routeTree\.gen\.ts$
+        exclude: ^apps/web/src/(routeTree\.gen\.ts|client/.*)$
       - id: web-format
         name: Frontend format (Vite+)
         entry: python scripts/web_hook.py fmt
         language: system
         files: ^apps/web/.*\.(tsx?|jsx?|json|css|md|yaml)$
-        exclude: ^apps/web/src/routeTree\.gen\.ts$
+        exclude: ^apps/web/(openapi\.json|src/routeTree\.gen\.ts|src/client/.*)$

@@ -34,12 +34,15 @@
   "ty.importStrategy": "useBundled",
   "ty.interpreter": "${workspaceFolder}/apps/api/.venv",
   "files.watcherExclude": {
-    "**/routeTree.gen.ts": true
+    "**/routeTree.gen.ts": true,
+    "**/src/client/**": true
   },
   "search.exclude": {
-    "**/routeTree.gen.ts": true
+    "**/routeTree.gen.ts": true,
+    "**/src/client/**": true
   },
   "files.readonlyInclude": {
-    "**/routeTree.gen.ts": true
+    "**/routeTree.gen.ts": true,
+    "**/src/client/**": true
   }
 }

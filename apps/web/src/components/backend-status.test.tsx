@@ -1,6 +1,10 @@
-import { renderToStaticMarkup } from "react-dom/server";
-import { describe, expect, it } from "vite-plus/test";
-import { StatusMessage } from "./backend-status";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vite-plus/test";
+import { BackendStatus, StatusMessage } from "./backend-status";
+
+afterEach(() => {
+  cleanup();
+});
 
 describe("connection status", () => {
   it.each([
@@ -8,9 +12,29 @@ describe("connection status", () => {
     ["ok", "Backend connected"],
     ["unavailable", "Backend unavailable"],
   ] as const)("announces the %s state", (status, message) => {
-    const html = renderToStaticMarkup(<StatusMessage status={status} />);
-    expect(html).toContain(message);
-    expect(html).toContain('role="status"');
-    expect(html).toContain('aria-live="polite"');
+    render(<StatusMessage status={status} />);
+    const statusRegion = screen.getByRole("status");
+    expect(statusRegion.textContent).toContain(message);
+    expect(statusRegion.getAttribute("aria-live")).toBe("polite");
+  });
+
+  it("checks the backend on mount and retries when requested", async () => {
+    const check = vi
+      .fn<() => Promise<{ status: "ok" } | { status: "unavailable" }>>()
+      .mockResolvedValueOnce({ status: "unavailable" })
+      .mockResolvedValueOnce({ status: "ok" });
+
+    render(<BackendStatus check={check} />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("status").textContent).toContain("Backend unavailable");
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: "Check again" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("status").textContent).toContain("Backend connected");
+    });
+    expect(check).toHaveBeenCalledTimes(2);
   });
 });

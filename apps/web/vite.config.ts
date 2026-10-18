@@ -9,8 +9,9 @@ export default defineConfig(({ mode }) => {
     process.env.API_BASE_URL = env.API_BASE_URL;
   }
   return {
-    fmt: { ignorePatterns: ["src/routeTree.gen.ts"] },
+    fmt: { ignorePatterns: ["src/routeTree.gen.ts", "src/client/**", "openapi.json"] },
     lint: {
+      ignorePatterns: ["src/routeTree.gen.ts", "src/client/**"],
       jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
       rules: { "vite-plus/prefer-vite-plus-imports": "error" },
       options: { typeAware: true, typeCheck: true },
@@ -21,6 +22,6 @@ export default defineConfig(({ mode }) => {
       ...(process.env.VITEST ? [] : [tanstackStart()]),
       viteReact(),
     ]),
-    test: { environment: "node", include: ["src/**/*.test.{ts,tsx}"] },
+    test: { environment: "happy-dom", include: ["src/**/*.test.{ts,tsx}"] },
   };
 });

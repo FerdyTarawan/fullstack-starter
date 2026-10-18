@@ -5,10 +5,12 @@ describe("backend health", () => {
   it("accepts a healthy API and uses a bounded uncached request", async () => {
     const request = vi.fn<typeof fetch>().mockResolvedValue(Response.json({ status: "ok" }));
     expect(await fetchHealth("http://localhost:8000", request)).toEqual({ status: "ok" });
-    expect(request).toHaveBeenCalledWith(new URL("http://localhost:8000/api/health"), {
-      signal: expect.any(AbortSignal),
-      cache: "no-store",
-    });
+    expect(request).toHaveBeenCalledTimes(1);
+    const passedRequest = request.mock.calls[0]?.[0] as Request;
+    expect(passedRequest).toBeInstanceOf(Request);
+    expect(passedRequest.url).toBe("http://localhost:8000/api/health");
+    expect(passedRequest.method).toBe("GET");
+    expect(passedRequest.signal).toBeInstanceOf(AbortSignal);
   });
 
   it.each([

@@ -14,3 +14,4 @@ dist/
 .vite/
 coverage/
 *.egg-info/
+openapi.json
