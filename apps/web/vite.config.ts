@@ -16,6 +16,8 @@ export default defineConfig(({ mode }) => {
     },
     lint: {
       ignorePatterns: ["src/routeTree.gen.ts", "src/client/**"],
+      plugins: ["react"],
+      categories: { correctness: "error" },
       jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
       rules: { "vite-plus/prefer-vite-plus-imports": "error" },
       options: { typeAware: true, typeCheck: true },
@@ -24,7 +26,7 @@ export default defineConfig(({ mode }) => {
     plugins: lazyPlugins(() => [
       tailwindcss(),
       ...(process.env.VITEST ? [] : [tanstackStart()]),
-      viteReact(),
+      viteReact({ compiler: true }),
     ]),
     test: { environment: "happy-dom", include: ["src/**/*.test.{ts,tsx}"] },
   };

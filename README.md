@@ -5,7 +5,7 @@ A full-stack monorepo starter pairing a Python **FastAPI** backend with a **TanS
 ## Stack
 
 - **Backend (`apps/api`)**: FastAPI, Granian (ASGI server), Pydantic Settings, Scalar + Swagger UI, UV, Ruff, ty, pytest
-- **Frontend (`apps/web`)**: TanStack Start, React 19, Tailwind CSS v4, shadcn (`aria-lyra` with React Aria), Vite+ (`vp`), Hey API (`@hey-api/openapi-ts`), React Testing Library (`happy-dom`)
+- **Frontend (`apps/web`)**: TanStack Start, React 19 + React Compiler (`oxc-transform-react`), Tailwind CSS v4, shadcn (`aria-lyra` with React Aria), Vite+ (`vp`), Hey API (`@hey-api/openapi-ts`), React Testing Library (`happy-dom`)
 - **Tooling**: Mise for runtime & task management, UV workspaces (Python), pnpm workspaces (Node/TS), `prek` for Git hooks
 
 ## Getting Started
@@ -81,7 +81,7 @@ mise exec -- pnpm --dir apps/web exec shadcn add input
 Open the repository root in VS Code. The workspace settings in `.vscode/` are pre-configured to:
 
 - Format and fix **Python** on save using **Ruff**, with type checking powered by **ty** (pointing at the root `.venv`, with Pylance disabled).
-- Format and lint **TypeScript, React, JSON, CSS, HTML, Markdown, and YAML** on save using **Oxc** via the local `.vscode/*.mjs` wrappers.
+- Format and lint **TypeScript, React, JSON, CSS, HTML, Markdown, and YAML** on save using **Oxc** via the local `.vscode/*.mjs` wrappers, including Oxlint's **React Compiler** correctness rules (`plugins: ["react"]`, `categories: { correctness: "error" }`).
 - Sort **Tailwind classes** on format (in `class`/`className` and inside `cn(...)`/`cva(...)`), resolved against `apps/web/src/styles.css` so custom theme tokens are ordered correctly. Configure it under `fmt.sortTailwindcss` in `apps/web/vite.config.ts`.
 
 If you already had VS Code open before running `mise run setup`, run **Developer: Reload Window** from the command palette so the language servers pick up the local environments.
