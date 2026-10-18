@@ -82,6 +82,7 @@ Open the repository root in VS Code. The workspace settings in `.vscode/` are pr
 
 - Format and fix **Python** on save using **Ruff**, with type checking powered by **ty** (pointing at the root `.venv`, with Pylance disabled).
 - Format and lint **TypeScript, React, JSON, CSS, HTML, Markdown, and YAML** on save using **Oxc** via the local `.vscode/*.mjs` wrappers.
+- Sort **Tailwind classes** on format (in `class`/`className` and inside `cn(...)`/`cva(...)`), resolved against `apps/web/src/styles.css` so custom theme tokens are ordered correctly. Configure it under `fmt.sortTailwindcss` in `apps/web/vite.config.ts`.
 
 If you already had VS Code open before running `mise run setup`, run **Developer: Reload Window** from the command palette so the language servers pick up the local environments.
 

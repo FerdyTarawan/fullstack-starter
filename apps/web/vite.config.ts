@@ -9,7 +9,11 @@ export default defineConfig(({ mode }) => {
     process.env.API_BASE_URL = env.API_BASE_URL;
   }
   return {
-    fmt: { ignorePatterns: ["src/routeTree.gen.ts", "src/client/**", "openapi.json"] },
+    fmt: {
+      ignorePatterns: ["src/routeTree.gen.ts", "src/client/**", "openapi.json"],
+      // Tailwind v4: sort against our entry stylesheet so custom theme tokens are recognized.
+      sortTailwindcss: { stylesheet: "./src/styles.css", functions: ["cn", "cva"] },
+    },
     lint: {
       ignorePatterns: ["src/routeTree.gen.ts", "src/client/**"],
       jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
