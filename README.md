@@ -81,8 +81,8 @@ mise exec -- pnpm --dir apps/web exec shadcn add input
 Open the repository root in VS Code. The workspace settings in `.vscode/` are pre-configured to:
 
 - Format and fix **Python** on save using **Ruff**, with type checking powered by **ty** (pointing at the root `.venv`, with Pylance disabled).
-- Format and lint **TypeScript, React, JSON, CSS, HTML, Markdown, and YAML** on save using **Oxc** via the local `.vscode/*.mjs` wrappers, including Oxlint's **React Compiler** correctness rules (`plugins: ["react"]`, `categories: { correctness: "error" }`).
-- Sort **Tailwind classes** on format (in `class`/`className` and inside `cn(...)`/`cva(...)`), resolved against `apps/web/src/styles.css` so custom theme tokens are ordered correctly. Configure it under `fmt.sortTailwindcss` in `apps/web/vite.config.ts`.
+- Format and lint **TypeScript, React, JSON, CSS, HTML, Markdown, and YAML** on save using **Oxc** via the local `.vscode/*.mjs` wrappers, with Oxlint's built-in `typescript`, `react` (including **React Compiler** rules), `unicorn`, `oxc`, `import`, `jsx-a11y`, and `vitest` plugins enabled.
+- Sort **imports** (`fmt.sortImports`) and **Tailwind classes** (`fmt.sortTailwindcss`, in `class`/`className` and inside `cn(...)`/`cva(...)`, resolved against `apps/web/src/styles.css`) automatically on format.
 
 If you already had VS Code open before running `mise run setup`, run **Developer: Reload Window** from the command palette so the language servers pick up the local environments.
 

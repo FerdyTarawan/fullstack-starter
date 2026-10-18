@@ -1,7 +1,7 @@
-import { defineConfig, lazyPlugins, loadEnv } from "vite-plus";
+import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
-import tailwindcss from "@tailwindcss/vite";
+import { defineConfig, lazyPlugins, loadEnv } from "vite-plus";
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "API_");
@@ -11,15 +11,19 @@ export default defineConfig(({ mode }) => {
   return {
     fmt: {
       ignorePatterns: ["src/routeTree.gen.ts", "src/client/**", "openapi.json"],
+      sortImports: true,
       // Tailwind v4: sort against our entry stylesheet so custom theme tokens are recognized.
       sortTailwindcss: { stylesheet: "./src/styles.css", functions: ["cn", "cva"] },
     },
     lint: {
       ignorePatterns: ["src/routeTree.gen.ts", "src/client/**"],
-      plugins: ["react"],
+      plugins: ["typescript", "react", "unicorn", "oxc", "import", "jsx-a11y", "vitest"],
       categories: { correctness: "error" },
       jsPlugins: [{ name: "vite-plus", specifier: "vite-plus/oxlint-plugin" }],
-      rules: { "vite-plus/prefer-vite-plus-imports": "error" },
+      rules: {
+        "react/react-in-jsx-scope": "off",
+        "vite-plus/prefer-vite-plus-imports": "error",
+      },
       options: { typeAware: true, typeCheck: true },
     },
     resolve: { tsconfigPaths: true },

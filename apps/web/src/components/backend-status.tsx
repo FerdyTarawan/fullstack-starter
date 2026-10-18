@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import type { HealthResult } from "@/lib/health";
 
@@ -6,13 +7,13 @@ type Status = HealthResult["status"] | "loading";
 
 export function StatusMessage({ status }: { status: Status }) {
   return (
-    <p role="status" aria-live="polite" className="text-sm text-muted-foreground">
+    <output aria-live="polite" className="block text-sm text-muted-foreground">
       {status === "loading"
         ? "Checking backend connection…"
         : status === "ok"
           ? "Backend connected. All systems ready."
           : "Backend unavailable. Start the API and try again."}
-    </p>
+    </output>
   );
 }
 

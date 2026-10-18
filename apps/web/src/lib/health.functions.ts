@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+
 import { fetchHealth } from "./health";
 
 export const getHealth = createServerFn({ method: "GET" }).handler(() =>
