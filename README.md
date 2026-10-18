@@ -20,7 +20,7 @@ mise run dev
 ```
 
 - **Frontend**: <http://127.0.0.1:3000>
-- **Backend API**: <http://127.0.0.1:8000> (interactive docs at <http://127.0.0.1:8000/docs>)
+- **Backend API**: <http://127.0.0.1:8000> (Scalar docs at <http://127.0.0.1:8000/docs>, Swagger UI at <http://127.0.0.1:8000/swagger>)
 
 Press `Ctrl-C` to stop both servers together.
 
