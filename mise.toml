@@ -18,7 +18,7 @@ run = "python scripts/dev.py"
 run = "uv run --package api granian --interface asgi --reload --reload-paths apps/api/src --host 127.0.0.1 --port 8000 api.main:app"
 
 [tasks."dev:web"]
-run = "pnpm --dir apps/web exec vp dev --host 127.0.0.1 --port 3000 --strictPort"
+run = "pnpm --dir apps/web run dev"
 
 [tasks."gen:api"]
 description = "Generate TypeScript SDK using @hey-api/openapi-ts"
@@ -27,21 +27,27 @@ run = [
   "pnpm --dir apps/web run openapi-ts",
 ]
 
+[tasks."ui:add"]
+description = "Add shadcn UI components to the web app (e.g., mise run ui:add input)"
+run = [
+  'pnpm --dir apps/web run ui:add "$@"',
+  "pnpm --dir apps/web run format src/components/ui",
+]
+
 [tasks.check]
 description = "Check Python and frontend formatting, lint, and types"
 run = [
   "ruff check apps scripts",
   "ruff format --check apps scripts",
   "uv run ty check apps scripts",
-  "pnpm --dir apps/web exec vp check",
-  "pnpm --dir apps/web exec tsc --noEmit",
+  "pnpm --dir apps/web run check",
 ]
 
 [tasks.format]
-run = ["ruff check --fix apps scripts", "ruff format apps scripts", "pnpm --dir apps/web exec vp fmt"]
+run = ["ruff check --fix apps scripts", "ruff format apps scripts", "pnpm --dir apps/web run format"]
 
 [tasks.test]
-run = ["uv run pytest apps/api", "pnpm --dir apps/web exec vp test run"]
+run = ["uv run pytest apps/api", "pnpm --dir apps/web run test"]
 
 [tasks.build]
-run = "pnpm --dir apps/web exec vp build"
+run = "pnpm --dir apps/web run build"

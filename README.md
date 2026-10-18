@@ -35,6 +35,7 @@ All everyday workflows run through Mise from the repo root:
 | `mise run dev:api`                  | Start only the FastAPI server                                     |
 | `mise run dev:web`                  | Start only the frontend dev server                                |
 | `mise run gen:api`                  | Generate TypeScript SDK (`src/client`) with `@hey-api/openapi-ts` |
+| `mise run ui:add <component>`       | Add shadcn UI components to `apps/web` and format them            |
 | `mise run check`                    | Run linters, format checks, and type-checking (`ty` + `tsc`)      |
 | `mise run format`                   | Auto-fix lint issues and format code across the workspace         |
 | `mise run test`                     | Run backend (`pytest`) and frontend (`vp test`) suites            |
@@ -69,7 +70,7 @@ To customize local settings:
 The frontend is configured with shadcn (`aria-lyra` style, React Aria components, neutral palette, and JetBrains Mono). To add new components:
 
 ```sh
-mise exec -- pnpm --dir apps/web exec shadcn add input
+mise run ui:add input
 ```
 
 ## Continuous Integration
@@ -92,7 +93,7 @@ To test a production build locally, build the SSR frontend and start the preview
 
 ```sh
 mise run build
-mise exec -- pnpm --dir apps/web exec vp preview --host 127.0.0.1 --port 3000
+mise exec -- pnpm --dir apps/web run preview
 ```
 
 In a second terminal, run the FastAPI server without reload:
