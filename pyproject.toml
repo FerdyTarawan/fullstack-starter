@@ -10,3 +10,6 @@ src = ["apps/api/src"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+
+[tool.ty.environment]
+python = "./.venv"
