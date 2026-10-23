@@ -47,5 +47,8 @@
   "files.readonlyInclude": {
     "**/routeTree.gen.ts": true,
     "**/src/client/**": true
-  }
+  },
+  "python.testing.pytestArgs": ["apps"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
 }
