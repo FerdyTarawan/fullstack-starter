@@ -36,6 +36,7 @@
   "ty.diagnosticMode": "workspace",
   "ty.importStrategy": "useBundled",
   "ty.interpreter": "${workspaceFolder}/.venv",
+  "vitest.configSearchPatternExclude": "{vite.config.ts,**/node_modules/**,**/vendor/**,**/.*/**,**/*.d.ts}",
   "files.watcherExclude": {
     "**/routeTree.gen.ts": true,
     "**/src/client/**": true
