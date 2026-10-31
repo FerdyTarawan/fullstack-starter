@@ -51,15 +51,18 @@ All everyday workflows run through Mise from the repo root:
 ├── apps/
 │   ├── api/                 # FastAPI app (src/api) and pytest suite
 │   └── web/                 # TanStack Start app, routes, generated SDK (src/client), and UI
-├── scripts/                 # Dev server supervisor, OpenAPI schema exporter, and hook helper
+├── scripts/                 # Dev server supervisor and OpenAPI schema exporter
 ├── mise.toml                # Pinned tool versions and project tasks
-├── package.json             # Package-manager selection and Node version
-└── pyproject.toml           # Root UV workspace config
+├── package.json             # Package-manager selection, Node version, and root tooling
+├── pyproject.toml           # Root UV workspace config
+└── vite.config.ts           # Shared Vite+ lint and format settings for all apps
 ```
 
 Both **UV** (`pyproject.toml` + `uv.lock`) and **pnpm** (`pnpm-workspace.yaml` + `pnpm-lock.yaml`) are configured as root workspaces with explicit member lists (`apps/api` in `pyproject.toml`, `apps/web` in `pnpm-workspace.yaml`). When you add another Python service or frontend app under `apps/`, simply add its path to the corresponding workspace file.
 
 Frontend tasks, dependency installation, and Git hooks all call `vp` directly. `vp install` delegates to the package manager selected by the root `package.json` (`packageManager: "pnpm@12.15.0"` by default), while `vp -C apps/web run <script>` runs the web app's scripts, preserving their flags and any extra arguments. Use `mise exec -- vp -C apps/web add <package>` to add frontend dependencies.
+
+Shared lint and format settings live in the repo-root `vite.config.ts`, so every app inherits them automatically. App-specific Vite, Vitest, and framework configuration stays in `apps/web/vite.config.ts`. Add new apps to `pnpm-workspace.yaml`, then scope any app-specific rules or formatter options with `lint.overrides` or `fmt.overrides` in the root config.
 
 To switch package managers, update `packageManager`, migrate the workspace membership, catalog references, overrides, and install settings from `pnpm-workspace.yaml` to the new manager's equivalents, and replace the lockfile. The Mise tasks and hooks continue using the same `vp` commands. Update CI's `version-file` if you move the Vite+ version out of `pnpm-workspace.yaml`.
 
@@ -86,10 +89,12 @@ mise run ui:add input
 Open the repository root in VS Code. The workspace settings in `.vscode/` are pre-configured to:
 
 - Format and fix **Python** on save using **Ruff**, with type checking powered by **ty** (pointing at the root `.venv`, with Pylance disabled).
-- Format and lint **TypeScript, React, JSON, CSS, HTML, Markdown, and YAML** on save using **Oxc** via the local `.vscode/*.mjs` wrappers, with Oxlint's built-in `typescript`, `react` (including **React Compiler** rules), `unicorn`, `oxc`, `import`, `jsx-a11y`, and `vitest` plugins enabled.
+- Format and lint **TypeScript, React, JSON, CSS, HTML, Markdown, and YAML** on save using **Oxc**, reading the shared Vite+ config from the repo-root `vite.config.ts`. Oxlint's `typescript`, `react` (including **React Compiler** rules), `unicorn`, `oxc`, `import`, `jsx-a11y`, and `vitest` plugins are enabled.
 - Sort **imports** (`fmt.sortImports`) and **Tailwind classes** (`fmt.sortTailwindcss`, in `class`/`className` and inside `cn(...)`/`cva(...)`, resolved against `apps/web/src/styles.css`) automatically on format.
 
 If you already had VS Code open before running `mise run setup`, run **Developer: Reload Window** from the command palette so the language servers pick up the local environments.
+
+The Oxc extension starts its formatter and linter servers when the window loads. If auto-format or lint stops working after changing the root tooling dependencies, run **Developer: Reload Window** again (or restart the Oxc servers from the **Output** panel) so they can resolve the root `vite-plus` install.
 
 ## Production Build & Preview
 

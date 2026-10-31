@@ -39,11 +39,12 @@ run = [
   "ruff check apps scripts",
   "ruff format --check apps scripts",
   "uv run ty check apps scripts",
+  "vp check vite.config.ts",
   "vp -C apps/web run check",
 ]
 
 [tasks.format]
-run = ["ruff check --fix apps scripts", "ruff format apps scripts", "vp -C apps/web run format"]
+run = ["ruff check --fix apps scripts", "ruff format apps scripts", "vp fmt vite.config.ts", "vp -C apps/web run format"]
 
 [tasks.test]
 run = ["uv run pytest apps/api", "vp -C apps/web run test"]

@@ -19,13 +19,13 @@ repos:
         files: ^(apps|scripts)/.*\.py$
       - id: web-lint
         name: Frontend lint (Vite+)
-        entry: python scripts/web_hook.py lint
+        entry: vp lint
         language: system
-        files: ^apps/web/.*\.[cm]?[jt]sx?$
+        files: ^(apps/web/.*\.[cm]?[jt]sx?|vite\.config\.ts)$
         exclude: ^apps/web/src/(routeTree\.gen\.ts|client/.*)$
       - id: web-format
         name: Frontend format (Vite+)
-        entry: python scripts/web_hook.py fmt
+        entry: vp fmt --check
         language: system
-        files: ^apps/web/.*\.(tsx?|jsx?|json|css|md|yaml)$
+        files: ^(apps/web/.*\.(tsx?|jsx?|json|css|md|yaml)|vite\.config\.ts)$
         exclude: ^apps/web/(openapi\.json|src/routeTree\.gen\.ts|src/client/.*)$
