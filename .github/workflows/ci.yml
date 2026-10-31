@@ -24,10 +24,17 @@ jobs:
       # Installs the exact runtimes and CLIs pinned in mise.toml (cached between runs).
       - uses: jdx/mise-action@v5
 
+      # Vite+ selects and downloads the package manager declared by the workspace.
+      - uses: voidzero-dev/setup-vp@v1.21.2
+        with:
+          version-file: pnpm-workspace.yaml
+          node-manager: false
+          run-install: false
+
       - name: Install dependencies
         run: |
           uv sync --frozen --all-packages
-          pnpm install --frozen-lockfile
+          vp install --frozen-lockfile
 
       - name: Lint, format, and type-check
         run: mise run check

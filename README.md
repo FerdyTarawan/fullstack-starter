@@ -6,11 +6,11 @@ A full-stack monorepo starter pairing a Python **FastAPI** backend with a **TanS
 
 - **Backend (`apps/api`)**: FastAPI, Granian (ASGI server), Pydantic Settings, Scalar + Swagger UI, UV, Ruff, ty, pytest
 - **Frontend (`apps/web`)**: TanStack Start, React 19 + React Compiler (`oxc-transform-react`), Tailwind CSS v4, shadcn (`aria-lyra` with React Aria), Vite+ (`vp`), Hey API (`@hey-api/openapi-ts`), React Testing Library (`happy-dom`)
-- **Tooling**: Mise for runtime & task management, UV workspaces (Python), pnpm workspaces (Node/TS), `prek` for Git hooks
+- **Tooling**: Mise for runtime & task management, UV workspaces (Python), Vite+ for frontend tasks and package management (pnpm by default), `prek` for Git hooks
 
 ## Getting Started
 
-Make sure you have [Mise](https://mise.jdx.dev/) installed and Git initialized (`git init`) before running setup so hooks can be installed. All required runtimes and CLI tools (Python, Node, UV, pnpm, Ruff, and `prek`) are pinned in `mise.toml`.
+Make sure you have [Mise](https://mise.jdx.dev/) installed and Git initialized (`git init`) before running setup so hooks can be installed. Python, Node, UV, Ruff, and `prek` are pinned in `mise.toml`. Install the [global Vite+ CLI](https://viteplus.dev/guide/) as well so `vp` is available on your PATH (including for Git hooks). Vite+ manages the package manager declared in `package.json`; a separate pnpm installation is unnecessary.
 
 ```sh
 mise trust
@@ -53,11 +53,15 @@ All everyday workflows run through Mise from the repo root:
 │   └── web/                 # TanStack Start app, routes, generated SDK (src/client), and UI
 ├── scripts/                 # Dev server supervisor, OpenAPI schema exporter, and hook helper
 ├── mise.toml                # Pinned tool versions and project tasks
-├── package.json             # Root pnpm workspace config
+├── package.json             # Package-manager selection and Node version
 └── pyproject.toml           # Root UV workspace config
 ```
 
 Both **UV** (`pyproject.toml` + `uv.lock`) and **pnpm** (`pnpm-workspace.yaml` + `pnpm-lock.yaml`) are configured as root workspaces with explicit member lists (`apps/api` in `pyproject.toml`, `apps/web` in `pnpm-workspace.yaml`). When you add another Python service or frontend app under `apps/`, simply add its path to the corresponding workspace file.
+
+Frontend tasks, dependency installation, and Git hooks all call `vp` directly. `vp install` delegates to the package manager selected by the root `package.json` (`packageManager: "pnpm@12.15.0"` by default), while `vp -C apps/web run <script>` runs the web app's scripts, preserving their flags and any extra arguments. Use `mise exec -- vp -C apps/web add <package>` to add frontend dependencies.
+
+To switch package managers, update `packageManager`, migrate the workspace membership, catalog references, overrides, and install settings from `pnpm-workspace.yaml` to the new manager's equivalents, and replace the lockfile. The Mise tasks and hooks continue using the same `vp` commands. Update CI's `version-file` if you move the Vite+ version out of `pnpm-workspace.yaml`.
 
 The starter includes a minimal `/api/health` endpoint and an example health-check call in `apps/web/src/lib/`, alongside a generated [Hey API (`@hey-api/openapi-ts`)](https://heyapi.dev/) SDK in `apps/web/src/client`. When you add or update FastAPI endpoints or Pydantic models, run `mise run gen:api` to regenerate the TypeScript SDK and types.
 
@@ -75,7 +79,7 @@ mise run ui:add input
 
 ## Continuous Integration
 
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs the tools pinned in `mise.toml`, then runs `mise run check`, `mise run test`, and `mise run build`. Finally it regenerates the API client and fails if `apps/web/src/client` or `routeTree.gen.ts` differ from what's committed, so remember to run `mise run gen:api` after backend changes.
+[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs on pushes to `main` and on pull requests. It installs the tools pinned in `mise.toml` and the global Vite+ CLI (matching the version in `pnpm-workspace.yaml`), installs dependencies through `vp install --frozen-lockfile`, then runs `mise run check`, `mise run test`, and `mise run build`. Finally it regenerates the API client and fails if `apps/web/src/client` or `routeTree.gen.ts` differ from what's committed, so remember to run `mise run gen:api` after backend changes.
 
 ## VS Code Setup
 
@@ -93,7 +97,7 @@ To test a production build locally, build the SSR frontend and start the preview
 
 ```sh
 mise run build
-mise exec -- pnpm --dir apps/web run preview
+mise exec -- vp -C apps/web run preview
 ```
 
 In a second terminal, run the FastAPI server without reload:
