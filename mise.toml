@@ -14,7 +14,7 @@ description = "Start all dev:* apps; Ctrl-C stops all"
 run = "python scripts/dev.py"
 
 [tasks."dev:api"]
-run = "uv run --package api granian --interface asgi --reload --reload-paths apps/api/src --host 127.0.0.1 --port 8000 api.main:app"
+run = "uv run --package api --group dev granian --interface asgi --reload --reload-paths apps/api/src --host 127.0.0.1 --port 8000 api.main:app"
 
 [tasks."dev:web"]
 run = "vp -C apps/web run dev"
